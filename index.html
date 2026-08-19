@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revolut Payment</title>
+    <title>Revolut Payment Pending</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -26,29 +26,19 @@
             justify-content: center; color: white; font-weight: 700; font-size: 14px;
         }
         .header-title { color: white; font-size: 17px; font-weight: 600; }
-        .step {
-            flex: 1; padding: 24px; display: none; flex-direction: column;
-        }
-        .step.active { display: flex; }
         .card {
             background: white; border-radius: 16px; padding: 28px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-top: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin: 24px;
+            text-align: center;
         }
         .icon-circle {
             width: 64px; height: 64px; border-radius: 50%;
             margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
         }
-        .icon-circle.purple { background: linear-gradient(135deg, #7b2cbf, #c77dff); }
-        .icon-circle.red { background: linear-gradient(135deg, #dc2626, #ef4444); }
+        .icon-circle.yellow { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
         .icon-circle svg { width: 28px; height: 28px; }
         h2 { text-align: center; margin: 0 0 8px; color: #191c24; font-size: 22px; font-weight: 700; }
         .subtitle { text-align: center; margin: 0 0 28px; color: #6b7280; font-size: 15px; line-height: 1.5; }
-        .info-box { background: #f8f9fb; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
-        .info-row:last-child { margin-bottom: 0; }
-        .info-label { color: #6b7280; font-size: 14px; }
-        .info-value { color: #191c24; font-size: 14px; font-weight: 600; }
-        .info-value.normal { font-weight: 500; }
         .amount-box {
             background: linear-gradient(135deg, #fef3c7, #fde68a);
             border-radius: 16px; padding: 24px; margin-bottom: 24px; text-align: center;
@@ -56,50 +46,32 @@
         .amount-label { display: block; color: #92400e; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
         .amount-value { display: block; color: #78350f; font-size: 42px; font-weight: 800; }
         .amount-note { display: block; color: #a16207; font-size: 13px; margin-top: 4px; }
+        .collection-box {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border-radius: 16px; padding: 24px; margin-bottom: 24px; text-align: center;
+        }
+        .collection-label { display: block; color: #166534; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .collection-value { display: block; color: #14532d; font-size: 42px; font-weight: 800; }
+        .collection-note { display: block; color: #15803d; font-size: 13px; margin-top: 4px; }
+        .info-box { background: #f8f9fb; border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: left; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
+        .info-row:last-child { margin-bottom: 0; }
+        .info-label { color: #6b7280; font-size: 14px; }
+        .info-value { color: #191c24; font-size: 14px; font-weight: 600; }
+        .info-value.normal { font-weight: 500; }
+        .info-value.pending { color: #f59e0b; font-weight: 600; }
         .summary-box { background: #f8f9fb; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
         .summary-row.total { border-top: 1px solid #e5e7eb; padding-top: 12px; margin-bottom: 0; }
         .summary-label { color: #6b7280; font-size: 14px; }
         .summary-label.bold { color: #191c24; font-size: 15px; font-weight: 700; }
         .summary-value { color: #191c24; font-size: 14px; font-weight: 500; }
+        .summary-value.green { color: #16a34a; font-weight: 600; }
         .summary-value.bold { font-size: 15px; font-weight: 700; }
-        .btn {
-            width: 100%; padding: 16px; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-        }
-        .btn-primary { background: linear-gradient(135deg, #7b2cbf, #9d4edd); color: white; }
-        .btn-danger { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
-        .btn-ghost { background: transparent; color: #6b7280; font-weight: 500; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn:active { transform: translateY(0); }
-        .btn + .btn { margin-top: 8px; }
-        .center-step {
-            flex: 1; padding: 24px; display: none;
-            flex-direction: column; align-items: center; justify-content: center;
-        }
-        .center-step.active { display: flex; }
-        .btc-container { text-align: center; width: 100%; max-width: 360px; }
-        .btc-loader { width: 80px; height: 80px; margin: 0 auto 24px; position: relative; }
-        .btc-loader .ring-bg { position: absolute; inset: 0; border: 4px solid #e5e7eb; border-radius: 50%; }
-        .btc-loader .ring-spin { position: absolute; inset: 0; border: 4px solid transparent; border-top-color: #f7931a; border-radius: 50%; animation: spin 1s linear infinite; }
-        .btc-loader .btc-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-        .btc-loader .btc-icon svg { width: 32px; height: 32px; }
-        .btc-amount-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 16px; padding: 24px; margin-bottom: 20px; text-align: center; }
-        .btc-amount-label { display: block; color: #f7931a; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-        .btc-amount-value { display: block; color: white; font-size: 32px; font-weight: 800; }
-        .btc-amount-fiat { display: block; color: #9ca3af; font-size: 13px; margin-top: 4px; }
-        .btc-address-box { background: white; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .btc-address-label { display: block; color: #6b7280; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-        .btc-address-inner { display: flex; align-items: center; gap: 8px; background: #f8f9fb; border-radius: 8px; padding: 12px; }
-        .btc-address-text { color: #191c24; font-size: 13px; font-family: 'Courier New', monospace; word-break: break-all; flex: 1; text-align: left; }
-        .btn-copy { background: #f7931a; color: white; border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-        .btn-copy:hover { opacity: 0.9; }
-        .status-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; }
-        .status-dot { width: 8px; height: 8px; background: #f7931a; border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
-        .status-text { color: #6b7280; font-size: 14px; }
-        .status-note { color: #9ca3af; font-size: 12px; margin: 0; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .summary-value.red { color: #dc2626; font-size: 15px; font-weight: 700; }
+        .alert-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 12px; margin-bottom: 20px; }
+        .alert-text { color: #b45309; font-size: 13px; font-weight: 600; }
+        .footer-text { color: #9ca3af; font-size: 12px; margin: 0; }
     </style>
 </head>
 <body>
@@ -109,128 +81,45 @@
             <span class="header-title">Revolut</span>
         </div>
 
-        <!-- Step 1 -->
-        <div id="step1" class="step active">
-            <div class="card">
-                <div class="icon-circle purple">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                </div>
-                <h2>Accept Payment</h2>
-                <p class="subtitle">You have received a payment request. Review and accept to proceed with the transaction.</p>
-                <div class="info-box">
-                    <div class="info-row"><span class="info-label">From</span><span class="info-value">Merchant Services</span></div>
-                    <div class="info-row"><span class="info-label">To</span><span class="info-value normal">Aris Adrianus Cornelis Groenendijk</span></div>
-                    <div class="info-row"><span class="info-label">Reference</span><span class="info-value normal">#REV-2026-78432</span></div>
-                    <div class="info-row"><span class="info-label">Date</span><span class="info-value normal">30 Jul 2026</span></div>
-                </div>
-                <button class="btn btn-primary" onclick="goToStep2()">Accept Payment</button>
-                <button class="btn btn-ghost">Decline</button>
+        <div class="card">
+            <div class="icon-circle yellow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
-        </div>
+            <h2>Payment Pending</h2>
+            <p class="subtitle">This transaction is awaiting payment. Please complete the payment to proceed.</p>
 
-        <!-- Step 2 -->
-        <div id="step2" class="step">
-            <div class="card">
-                <div class="icon-circle red">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                </div>
-                <h2>Payment Required</h2>
-                <p class="subtitle">To proceed with this transaction, a processing fee is required.</p>
-                <div class="amount-box">
-                    <span class="amount-label">Amount to Pay</span>
-                    <span class="amount-value">€600.0</span>
-                    <span class="amount-note">One-time processing fee</span>
-                </div>
-                <div class="summary-box">
-                    <div class="summary-row"><span class="summary-label">Subtotal</span><span class="summary-value">€600.0</span></div>
-                    <div class="summary-row"><span class="summary-label">VAT (0%)</span><span class="summary-value">€0.0</span></div>
-                    <div class="summary-row total"><span class="summary-label bold">Total</span><span class="summary-value bold">€600.0</span></div>
-                </div>
-                <button class="btn btn-danger" onclick="payNow()">Pay €600.0</button>
-                <button class="btn btn-ghost" onclick="goBack()">Cancel</button>
+            <div class="amount-box">
+                <span class="amount-label">Amount Due</span>
+                <span class="amount-value">€600.0</span>
+                <span class="amount-note">One-time processing fee</span>
             </div>
-        </div>
 
-        <!-- Step 3: Awaiting BTC Payment -->
-        <div id="step3" class="center-step">
-            <div class="btc-container">
-                <div class="btc-loader">
-                    <div class="ring-bg"></div>
-                    <div class="ring-spin"></div>
-                    <div class="btc-icon">
-                        <svg viewBox="0 0 24 24" fill="#f7931a"><path d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.67 22.05-1.244 15.525.362 9.105 1.962 2.67 8.475-1.24 14.9.358c6.43 1.605 10.342 8.115 8.738 14.546zm-6.35-4.613c.24-1.59-.974-2.45-2.64-3.03l.54-2.153-1.315-.33-.52 2.1c-.347-.087-.7-.167-1.053-.25l.53-2.12-1.32-.33-.54 2.15c-.285-.065-.565-.13-.84-.2l-1.815-.45-.35 1.407s.974.22.955.235c.535.136.63.486.615.766l-.615 2.463c.037.01.085.024.138.047l-.14-.035-.865 3.47c-.066.163-.234.408-.612.315.015.02-.955-.238-.955-.238L8.35 17.58l1.714.427c.318.08.63.164.935.243l-.545 2.19 1.32.33.54-2.16c.36.1.705.19 1.05.27l-.54 2.14 1.32.33.545-2.18c2.24.42 3.93.25 4.64-1.77.57-1.63-.03-2.57-1.22-3.18.87-.2 1.53-.78 1.7-1.97h.01zm-3.05 4.3c-.41 1.64-3.17.76-4.07.53l.73-2.91c.9.22 3.78.66 3.35 2.38zm.41-4.3c-.37 1.49-2.66.73-3.4.55l.66-2.64c.74.18 3.13.53 2.74 2.09z"/></svg>
-                    </div>
-                </div>
-                <h2>Awaiting Payment</h2>
-                <p class="subtitle">Please send the payment in Bitcoin (BTC) to complete your transaction.</p>
-                <div class="btc-amount-card">
-                    <span class="btc-amount-label">Send BTC</span>
-                    <span class="btc-amount-value">0.00735 BTC</span>
-                    <span class="btc-amount-fiat">≈ €600.0</span>
-                </div>
-                <div class="summary-box">
-                    <div class="summary-row"><span class="summary-label">Paid</span><span class="summary-value" style="color: #16a34a; font-weight: 600;">€200.0</span></div>
-                    <div class="summary-row total"><span class="summary-label bold">Awaiting</span><span class="summary-value bold" style="color: #dc2626;">€400.0</span></div>
-                </div>
-                <div class="btc-address-box">
-                    <span class="btc-address-label">BTC Address</span>
-                    <div class="btc-address-inner">
-                        <span class="btc-address-text" id="btcAddr">bc1qhqep9yfm3ya2ryfwq2r0q30v3z6tk65fv7kjyy</span>
-                        <button class="btn-copy" id="copyBtn" onclick="copyAddr()">Copy</button>
-                    </div>
-                </div>
-                <div class="status-row">
-                    <span class="status-dot"></span>
-                    <span class="status-text">Waiting for blockchain confirmation...</span>
-                </div>
-                <p class="status-note">This may take a few minutes</p>
+            <div class="collection-box">
+                <span class="collection-label">Collection Amount</span>
+                <span class="collection-value">€80,000.0</span>
+                <span class="collection-note">Total funds to be released upon payment</span>
             </div>
+
+            <div class="info-box">
+                <div class="info-row"><span class="info-label">Transaction ID</span><span class="info-value">#REV-2026-78432</span></div>
+                <div class="info-row"><span class="info-label">Date & Time</span><span class="info-value normal">19 Aug 2026, 18:52 CET</span></div>
+                <div class="info-row"><span class="info-label">From</span><span class="info-value normal">Merchant Services</span></div>
+                <div class="info-row"><span class="info-label">To</span><span class="info-value normal">Aris Adrianus Cornelis Groenendijk</span></div>
+                <div class="info-row"><span class="info-label">Status</span><span class="info-value pending">⏳ Awaiting Payment</span></div>
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-row"><span class="summary-label">Processing Fee</span><span class="summary-value">€600.0</span></div>
+                <div class="summary-row"><span class="summary-label">Collection Amount</span><span class="summary-value green">€80,000.0</span></div>
+                <div class="summary-row total"><span class="summary-label bold">Total Due</span><span class="summary-value red">€600.0</span></div>
+            </div>
+
+            <div class="alert-box">
+                <span class="alert-text">⚠ Pay €600.0 to release your €80,000.0 collection.</span>
+            </div>
+
+            <p class="footer-text">This is an official Revolut payment request. For questions, contact support@revolut.com</p>
         </div>
     </div>
-
-    <script>
-        function goToStep2() {
-            document.getElementById('step1').classList.remove('active');
-            document.getElementById('step2').classList.add('active');
-        }
-        function goBack() {
-            document.getElementById('step2').classList.remove('active');
-            document.getElementById('step1').classList.add('active');
-        }
-        function payNow() {
-            document.getElementById('step2').classList.remove('active');
-            document.getElementById('step3').classList.add('active');
-        }
-        function copyAddr() {
-            const addr = document.getElementById('btcAddr').innerText;
-            const btn = document.getElementById('copyBtn');
-            
-            const textarea = document.createElement('textarea');
-            textarea.value = addr;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            
-            try {
-                document.execCommand('copy');
-                btn.innerText = 'Copied!';
-                btn.style.background = '#16a34a';
-                setTimeout(() => {
-                    btn.innerText = 'Copy';
-                    btn.style.background = '#f7931a';
-                }, 2000);
-            } catch (err) {
-                btn.innerText = 'Failed';
-                btn.style.background = '#dc2626';
-                setTimeout(() => {
-                    btn.innerText = 'Copy';
-                    btn.style.background = '#f7931a';
-                }, 2000);
-            }
-            
-            document.body.removeChild(textarea);
-        }
-    </script>
 </body>
 </html>
