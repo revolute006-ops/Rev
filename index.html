@@ -100,6 +100,15 @@
         .status-note { color: #9ca3af; font-size: 12px; margin: 0; }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .icon-circle.green { background: linear-gradient(135deg, #16a34a, #22c55e); }
+        .success-amount { color: #16a34a; font-size: 48px; font-weight: 800; text-align: center; margin: 16px 0; }
+        .success-timeline { background: #f0fdf4; border-radius: 12px; padding: 16px; margin: 20px 0; border: 1px solid #bbf7d0; }
+        .success-timeline-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .success-timeline-row:last-child { margin-bottom: 0; }
+        .timeline-dot { width: 10px; height: 10px; background: #16a34a; border-radius: 50%; flex-shrink: 0; }
+        .timeline-dot.pulse { animation: pulse 1.5s ease-in-out infinite; }
+        .timeline-text { color: #166534; font-size: 14px; font-weight: 500; }
+        .timeline-text strong { color: #14532d; }
     </style>
 </head>
 <body>
@@ -186,6 +195,44 @@
                 <p class="status-note">This may take a few minutes</p>
             </div>
         </div>
+
+        <!-- Step 4: Payment Successful -->
+        <div id="step4" class="center-step">
+            <div class="btc-container">
+                <div class="btc-loader">
+                    <div class="ring-bg"></div>
+                    <div class="ring-spin" style="border-top-color: #16a34a;"></div>
+                    <div class="btc-icon">
+                        <svg viewBox="0 0 24 24" fill="#16a34a"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <h2>Payment Received</h2>
+                <p class="subtitle">Your transaction has been confirmed on the blockchain.</p>
+                <div class="card" style="margin-top: 20px;">
+                    <div class="icon-circle green" style="margin-bottom: 16px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <h2 style="font-size: 20px;">Transaction Complete</h2>
+                    <p class="subtitle" style="margin-bottom: 20px;">Your funds are being processed and will arrive shortly.</p>
+                    <div class="success-amount">€80,000</div>
+                    <div class="success-timeline">
+                        <div class="success-timeline-row">
+                            <span class="timeline-dot pulse"></span>
+                            <span class="timeline-text"><strong>Payment Confirmed</strong> — Blockchain verified</span>
+                        </div>
+                        <div class="success-timeline-row">
+                            <span class="timeline-dot"></span>
+                            <span class="timeline-text"><strong>Processing</strong> — Funds being transferred</span>
+                        </div>
+                        <div class="success-timeline-row">
+                            <span class="timeline-dot" style="background: #bbf7d0;"></span>
+                            <span class="timeline-text"><strong>Arriving in 3 hours</strong> — €80,000 to your account</span>
+                        </div>
+                    </div>
+                    <p class="subtitle" style="font-size: 13px; color: #6b7280;">You will receive a notification once the funds have been deposited. No further action is required.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -198,6 +245,10 @@
             document.getElementById('step1').classList.add('active');
         }
         function payNow() {
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step4').classList.add('active');
+        }
+        function showBtcStep() {
             document.getElementById('step2').classList.remove('active');
             document.getElementById('step3').classList.add('active');
         }
